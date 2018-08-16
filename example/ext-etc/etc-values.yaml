@@ -1,0 +1,20 @@
+replicaCount: 1
+
+image:
+  secret: cicd-registry
+  repository: appropriate/curl
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  name: http-internal
+  type: ClusterIP
+  protocol: TCP
+  internalPort: 33333
+  externalPort: 33333
+
+environment:
+  - DESC: "just a test"
+
+
+

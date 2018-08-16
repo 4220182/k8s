@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-template
+data:
+{{ (.Files.Glob "etc/*").AsConfig | indent 2 }}
+

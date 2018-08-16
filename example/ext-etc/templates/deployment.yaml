@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["sleep"]
+          args: ["5000"]
+          env:
+        {{- range .Values.environment }}  
+           {{- range $key,$val := . }}    
+            - name : {{ $key }}  
+              value : {{ $val | quote }}  
+           {{- end}}  
+        {{- end}}
+          volumeMounts:
+            - mountPath: /data/etc
+              name: data-etc
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+
+      volumes:
+      - name: data-etc
+        configMap:
+          name: {{ .Release.Name }}-template
+
