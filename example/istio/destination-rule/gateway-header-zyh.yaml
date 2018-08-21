@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: nginx-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "n1.ng.com"
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: n1
+spec:
+  hosts:
+  - "n1.ng.com"
+  gateways:
+  - nginx-gateway
+  http:
+  - match:
+    - headers:
+        user:
+          exact: zyh
+    route:
+    - destination:
+        host: nginx
+        subset: v2
+  - route:
+    - destination:
+        host: nginx
+        subset: v1
