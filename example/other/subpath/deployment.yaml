@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: busybox
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: busybox
+    spec:
+      containers:
+      - name: busybox
+        image: busybox:latest
+        command: ["sleep"]
+        args: ["5000"]
+        volumeMounts:
+        - mountPath: /conf/test-file
+          name: config-volume
+          subPath: conf/test-file
+        - mountPath: /conf/etc/test-file
+          name: config-volume
+          subPath: conf2/test-file
+        - mountPath: /etc/test-file
+          name: config-volume
+          subPath: conf3/test-file
+      volumes:
+        - name: config-volume
+          configMap:
+            name: busybox-configmap
+            items:
+            - key: con.txt
+              path: conf/test-file
+            - key: con2.txt
+              path: conf2/test-file
+            - key: con3.txt
+              path: conf3/test-file

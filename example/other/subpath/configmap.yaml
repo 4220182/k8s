@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: busybox-configmap
+data:
+  con.txt: |
+    haha-v1
+  con2.txt: |
+    haha-v2
+  con3.txt: |
+    haha-v3
