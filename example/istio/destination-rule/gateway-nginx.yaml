@@ -29,11 +29,9 @@ spec:
           port:
             number: 80
           host: nginx
-          subset: v2
         weight: 33
       - destination:
           port:
             number: 80
           host: nginx
-          subset: v1
         weight: 67

@@ -31,7 +31,12 @@ spec:
         image: nginx:1.7.9
         ports:
         - containerPort: 80
-
+      - name: iptable
+        image: googlecontainer/debian-iptables-amd64:v5
+        command: ["sleep"]
+        args: ["5001"]
+        securityContext:
+          privileged: true
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -50,4 +55,9 @@ spec:
         image: nginx:1.7.9
         ports:
         - containerPort: 80
-
+      - name: iptable1
+        image: googlecontainer/debian-iptables-amd64:v5
+        command: ["sleep"]
+        args: ["5001"]
+        securityContext:
+          privileged: true

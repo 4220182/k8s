@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ext-svc
+  namespace: default
+spec:
+  externalName: 192.168.5.86
+  type: ExternalName
+
