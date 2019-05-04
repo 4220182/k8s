@@ -8,6 +8,7 @@ spec:
     metadata:
       labels:
         app: nginx
+        logging: in
       annotations:
         kubernetes.annotations.autotrader/logging: "true"
     spec:

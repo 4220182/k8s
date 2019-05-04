@@ -23,12 +23,11 @@ data:
     filebeat.autodiscover:
       providers:
         - type: kubernetes
-          in_cluster: true
-          include_annotations: '*'
+          include_annotations: ["autotrader/logging"]
           templates:
             - condition:
                 equals:
-                  kubernetes.labels.logging: "in"
+                  kubernetes.annotations.autotrader/logging: "true"
               config:
                 - type: docker
                   containers.ids:
@@ -36,7 +35,6 @@ data:
 
     processors:
       - add_cloud_metadata: ~
-      - add_kubernetes_metadata: ~
 
     output.file:
       path: "/data/logs/"

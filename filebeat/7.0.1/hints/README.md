@@ -24,3 +24,5 @@ https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscove
 其他实现方法：
 https://discuss.elastic.co/t/filebeat-autodiscover-hints-breaking-template/137310/10
 
+问题：
+include_annotations 为什么没有生效？
