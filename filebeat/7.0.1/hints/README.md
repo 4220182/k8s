@@ -76,7 +76,8 @@ spec:
         filebeat.logging/game: "mygame"
 ```        
 
-### 三、参考
+三、参考:
+
 <https://www.elastic.co/guide/en/beats/filebeat/7.0/configuration-autodiscover-hints.html>
 <https://www.elastic.co/guide/en/beats/filebeat/7.0/filtering-and-enhancing-data.html>
 
