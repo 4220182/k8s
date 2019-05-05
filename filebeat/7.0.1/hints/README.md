@@ -30,6 +30,34 @@ Filebeat支持基于提供程序提示的自动发现。提示系统在Kubernete
           when:
             not.has_fields: ['kubernetes.annotations.filebeat_logging/game']
 ```
+### 注意：
+1. include_annotations和not.has_fields中的annotations定义，一个是使用"." 另一个使用"_"，在filebeat 6.x中都是使用".",不知是否是7.0.1的一个BUG。
+2. include_annotations：“*” 无效，这是否也是7.0.1的BUG？
+
+出现这样的差异，我是在查看filebeat日志输出发现此问题。
+```
+# tail autodiscover-kubernetes.log -n 1 |jq .
+{
+  "@timestamp": "2019-05-05T12:29:55.320Z",
+  "@metadata": {
+    "beat": "filebeat",
+    "type": "_doc",
+    "version": "7.0.1"
+  },
+  "kubernetes": {
+    "namespace": "default",
+    "replicaset": {
+      "name": "nginx-74f94564f"
+    },
+    "labels": {
+      "pod-template-hash": "74f94564f",
+      "app": "nginx"
+    },
+    "annotations": {
+      "filebeat_logging/game": "mygame"
+    },
+......
+```
 [nginx.html](nginx.yaml) 增加：
 annotations: 
   filebeat.logging/game: "mygame" ,如下：
