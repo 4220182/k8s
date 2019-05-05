@@ -12,18 +12,40 @@ Filebeat支持基于提供程序提示的自动发现。提示系统在Kubernete
         co.elastic.logs/disable: "true"
 ```
 
-但是，我们有时候需要，默认不监控所有日志，如果需要容器监控日志,就这该容器: [nginx](nginx.yaml)加上：
+但是，我们有时候需要，默认不监控所有日志，这就需要使用折中的方法实现：
+增加processors->drop,只收集符合条件的容器日志.
+如[filebeat-kubernetes-defaultNotRecordLogs.yaml](filebeat-kubernetes-defaultNotRecordLogs.yaml) ：
 ```
+    filebeat.autodiscover:
+      providers:
+        - type: kubernetes
+          hints.enabled: true
+          include_annotations:
+          - "filebeat.logging/game"
+
+    processors:
+      - add_kubernetes_metadata:
+          in_cluster: true
+      - drop_event:
+          when:
+            not.has_fields: ['kubernetes.annotations.filebeat_logging/game']
+```
+[nginx.html](nginx.yaml) 增加：
+annotations: 
+  filebeat.logging/game: "mygame" ,如下：
+```
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
       annotations:
         co.elastic.logs/disable: "false"
-```
-此功能应该在filebeat 7.x以上就可以实现，参考：
+        filebeat.logging/game: "mygame"
+```        
 
-https://github.com/elastic/beats/pull/10911
-https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover-hints.html
+参考：
+<https://www.elastic.co/guide/en/beats/filebeat/7.0/configuration-autodiscover-hints.html>
+<https://www.elastic.co/guide/en/beats/filebeat/7.0/filtering-and-enhancing-data.html>
 
-其他实现方法：
-https://discuss.elastic.co/t/filebeat-autodiscover-hints-breaking-template/137310/10
-
-问题：
-include_annotations 为什么没有生效？
