@@ -32,7 +32,7 @@
             not.has_fields: ['kubernetes.annotations.filebeat_logging/game']
 ```
 ### 注意：
-1. include_annotations和not.has_fields中的annotations定义，一个是使用"." 另一个使用"_"，在filebeat 6.x中都是使用".",不知是否是7.0.1的一个BUG。
+1. include_annotations和not.has_fields中的annotations定义，前者是使用"." 后者需要把前者的"."替换为"_",否则条件不成立，在filebeat 6.x中都是使用".",不知是否是7.0.1的一个BUG。
 2. include_annotations：“*” 无效，这是否也是7.0.1的BUG？
 
 出现这样的差异，我是在去掉Drop_event再查看filebeat日志输出发现此问题。
