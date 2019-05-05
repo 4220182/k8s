@@ -6,12 +6,13 @@ Filebeat支持基于提供程序提示的自动发现。提示系统在Kubernete
         - type: kubernetes
           hints.enabled: true
 ```
-默认是所有容器日志都会监控到，如果想不监控该容器的日志输出，需要在容器增加：
+默认所有容器日志都会被监控到，如果想不监控该容器的日志输出，需要在容器[nginx.yaml](nginx.yaml)增加annotations：
 ```
       annotations:
         co.elastic.logs/disable: "true"
 ```
-但是，我们有时候需要，默认不监控所有日志，如果需要哪些容器监控日志，就这该容器加上：
+
+但是，我们有时候需要，默认不监控所有日志，如果需要容器监控日志,就这该容器: [nginx](nginx.yaml)加上：
 ```
       annotations:
         co.elastic.logs/disable: "false"
