@@ -70,7 +70,6 @@ spec:
       labels:
         app: nginx
       annotations:
-        co.elastic.logs/disable: "false"
         filebeat.logging/game: "mygame"
 ```        
 
