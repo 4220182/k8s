@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpine
+  labels:
+    app: alpine
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: alpine
+  template:
+    metadata:
+      labels:
+        app: alpine
+    spec:
+      priorityClassName: high-priority
+      nodeSelector:
+        kubernetes.io/hostname: 10.2.2.121
+      containers:
+      - name: alpine
+        image: alpine:latest
+        imagePullPolicy: IfNotPresent
+        command: ["sleep"]
+        args: ["60000"]
+        resources:
+          requests:
+            cpu: 100m
+        securityContext:
+          privileged: true

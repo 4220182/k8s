@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory
+  labels:
+    app: memory
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: memory
+  template:
+    metadata:
+      labels:
+        app: memory
+    spec:
+      priorityClassName: high-priority
+      nodeSelector:
+        test: memory
+      containers:
+      - name: memory
+        image: koza/memory:latest
+        imagePullPolicy: IfNotPresent
+        command: ["python2","start.py","400"]
+        env:
+          - name: version
+            value: "2"

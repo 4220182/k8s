@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-metrics
+  labels:
+    app: http-metrics
+spec:
+  type: NodePort
+  selector:
+    app: http-metrics
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 8888
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-metrics
+  labels:
+    app: http-metrics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-metrics
+  template:
+    metadata:
+      labels:
+        app: http-metrics
+      annotations:
+        prometheus.io/scrape: "false"
+        imageregistry: "http://hub.docker.com/22"
+    spec:
+      priorityClassName: high-priority
+      nodeSelector:
+        kubernetes.io/hostname: 10.2.2.121
+      containers:
+      - name: metrices
+        image: koza/prometheus-metrics:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 800m

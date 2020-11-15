@@ -1,0 +1,19 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: burn-cpu
+  namespace: chaos-testing
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      "app": "memory"
+  stressors:
+    cpu:
+      workers: 8
+      load: 80
+  duration: "110s"
+  scheduler:
+    cron: "@every 2m"

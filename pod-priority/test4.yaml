@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test4
+  labels:
+    app: test4
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: test4
+  template:
+    metadata:
+      labels:
+        app: test4
+    spec:
+      nodeSelector:
+        test: memory
+      containers:
+      - name: memory
+        image: koza/memory:latest
+        imagePullPolicy: IfNotPresent
+        command: ["python2","start.py","400"]
+

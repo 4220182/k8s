@@ -1,0 +1,17 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: burn-memory
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      "app": "busybox"
+  stressors:
+    memory:
+      workers: 1
+  duration: "50s"
+  scheduler:
+    cron: "@every 2m"

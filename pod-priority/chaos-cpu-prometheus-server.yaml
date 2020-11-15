@@ -1,0 +1,19 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: burn-cpu-prometheus-server
+  namespace: chaos-testing
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      "component": "server"
+  stressors:
+    cpu:
+      workers: 8
+      load: 100
+  duration: "110s"
+  scheduler:
+    cron: "@every 2m"
