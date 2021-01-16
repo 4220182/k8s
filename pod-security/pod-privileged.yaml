@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pri-pod
+  namespace: default
+spec:
+  nodeSelector:
+    test: memory
+  containers:
+    - command: ['sh', '-c', 'echo "Hello, wwww.chenshaowen.com !" && sleep 3600']
+      image: docker.io/alpine:3.12
+      name: pod-test
+      securityContext:
+        privileged: true
+  hostIPC: true
+  hostNetwork: true
+  hostPID: true
+
