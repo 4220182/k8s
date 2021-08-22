@@ -1,0 +1,39 @@
+
+---
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: overprovisioning
+value: -1
+globalDefault: false
+description: "Priority class used by overprovisioning."
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pause-overprovisioning
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: overprovisioning
+  template:
+    metadata:
+      labels:
+        run: overprovisioning
+    spec:
+      priorityClassName: overprovisioning
+      nodeSelector:
+        test: auto
+      containers:
+      - name: reserve-resources
+        image: registry.aliyuncs.com/google_containers/pause:3.2
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: "2"
+            memory: 1700Mi
+          requests:
+            cpu: 100m
+            memory: 1500Mi

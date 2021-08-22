@@ -1,19 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-autoscaler
+  name: pause-autoscaler-controller
+  namespace: kube-system
   labels:
-    k8s-app: nginx-autoscaler
+    k8s-app: pause-autoscaler-controller
 spec:
   selector:
     matchLabels:
-      k8s-app: nginx-autoscaler
+      k8s-app: pause-autoscaler-controller
   template:
     metadata:
       labels:
-        k8s-app: nginx-autoscaler
+        k8s-app: pause-autoscaler-controller
     spec:
-      serviceAccountName: zyh
+      serviceAccountName: zyh 
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node1
       containers:
       - name: autoscaler
         image: mirrorgooglecontainers/cluster-proportional-autoscaler-amd64:1.6.0
@@ -25,8 +28,8 @@ spec:
         command:
         - /cluster-proportional-autoscaler
         - --namespace=default
-        - --configmap=nginx-autoscaler
-        - --target=deployment/nginx
+        - --configmap=pause-overprovisioning
+        - --target=deployment/pause-overprovisioning
         # When cluster is using large nodes(with more cores), "coresPerReplica" should dominate.
         # If using small nodes, "nodesPerReplica" should dominate.
         - --default-params={"linear":{"coresPerReplica":4,"nodesPerReplica":16,"min":1}}
