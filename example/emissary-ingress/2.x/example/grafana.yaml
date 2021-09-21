@@ -1,0 +1,19 @@
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  prometheus-mapping
+spec:
+  prefix: /
+  service: prometheus-server:80
+  host: prometheus.test.com
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  grafana-mapping
+spec:
+  prefix: /
+  service: grafana:80
+  host: grafana.test.com
+

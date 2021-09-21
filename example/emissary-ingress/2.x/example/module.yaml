@@ -1,0 +1,9 @@
+apiVersion: getambassador.io/v2
+kind:  Module
+metadata:
+  name:  ambassador
+spec:
+  config:
+    ip_deny:
+      - remote: 192.168.5.121/32
+

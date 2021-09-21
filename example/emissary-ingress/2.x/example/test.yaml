@@ -1,0 +1,94 @@
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorListener
+metadata:
+  name: http-listener
+spec:
+  port: 8080
+  protocol: HTTP  # NOT A TYPO, see below
+  securityModel: XFP
+  hostBinding:
+    namespace:
+      from: SELF   # See below
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorListener
+metadata:
+  name: https-listener
+spec:
+  port: 8443
+  protocol: HTTPS
+  securityModel: XFP
+  hostBinding:
+    namespace:
+      from: SELF   # See below
+---
+apiVersion: getambassador.io/v2
+kind:  TLSContext
+metadata:
+  name:  h2-tls
+spec:
+  secret: h2-certs
+  hosts: ["*"]
+  alpn_protocols: h2, http/1.1
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorHost
+metadata:
+  name: test.com-host
+spec:
+  hostname: "*.test.com"
+  acmeProvider:
+    authority: none
+  tlsSecret:
+    name: h2-tls
+  tlsSecret: 
+    name: tls-cert
+  requestPolicy:
+    insecure:
+      action: Route
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  h1-mapping
+spec:
+  prefix: /
+  service: httpbin:8080
+  host: h1.test.com
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  h2-mapping
+spec:
+  prefix: /
+  service: nginx:80
+  host: h2.test.com
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  h3-nginx-mapping
+spec:
+  prefix: /
+  service: nginx:80
+  host: h3.test.com
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  h3-httpbin-mapping
+spec:
+  prefix: /httpbin
+  service: httpbin:8080
+  host: h3.test.com
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  h9-mapping
+spec:
+  prefix: /
+  service: nginx:80
+  host: h9.test.com
