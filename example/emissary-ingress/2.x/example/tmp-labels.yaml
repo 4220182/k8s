@@ -1,0 +1,118 @@
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorListener
+metadata:
+  name: http-listener-8888
+spec:
+  port: 8888
+  protocol: HTTP  # NOT A TYPO, see below
+  securityModel: XFP
+  hostBinding:
+    selector:
+      matchLabels:
+        tenant: h8888
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorListener
+metadata:
+  name: https-listener-9999
+spec:
+  port: 9999
+  protocol: HTTPS
+  securityModel: XFP
+  hostBinding:
+    selector:
+      matchLabels:
+        tenant: h8888
+
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorListener
+metadata:
+  name: http-listener-8080
+spec:
+  port: 8080
+  protocol: HTTP  # NOT A TYPO, see below
+  securityModel: XFP
+  hostBinding:
+    selector:
+      matchLabels:
+        tenant: h8080
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorListener
+metadata:
+  name: https-listener-8443
+spec:
+  port: 8443
+  protocol: HTTPS
+  securityModel: XFP
+  hostBinding:
+    selector:
+      matchLabels:
+        tenant: h8080
+---
+apiVersion: getambassador.io/v2
+kind:  TLSContext
+metadata:
+  name:  h2-tls-tmp
+spec:
+  secret: tls-cert
+  hosts: ["*"]
+  alpn_protocols: h2, http/1.1
+
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorHost
+metadata:
+  name: h8888.tmp.com-host
+  labels:
+    tenant: h8888
+spec:
+  hostname: "h8888.tmp.com"
+  acmeProvider:
+    authority: none
+  tlsSecret:
+    name: h2-tls-tmp
+  tlsSecret: 
+    name: tls-cert
+  requestPolicy:
+    insecure:
+      action: Redirect
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  h8888-mapping
+spec:
+  prefix: /
+  service: nginx:80
+  host: h8888.tmp.com
+
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind: AmbassadorHost
+metadata:
+  name: h8080.tmp.com-host
+  labels:
+    tenant: h8080
+spec:
+  hostname: "h8080.tmp.com"
+  acmeProvider:
+    authority: none
+  tlsSecret:
+    name: h2-tls-tmp
+  tlsSecret:
+    name: tls-cert
+  requestPolicy:
+    insecure:
+      action: Redirect
+---
+apiVersion: x.getambassador.io/v3alpha1
+kind:  AmbassadorMapping
+metadata:
+  name:  h8080-mapping
+spec:
+  prefix: /
+  service: httpbin:8080
+  host: h8080.tmp.com
