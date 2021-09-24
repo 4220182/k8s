@@ -1,0 +1,51 @@
+---
+apiVersion: getambassador.io/v2
+kind:  TLSContext
+metadata:
+  name:  h2-tls
+spec:
+  secret: tls-cert
+  hosts: ["*"]
+  alpn_protocols: h2, http/1.1
+---
+apiVersion: getambassador.io/v2
+kind: Host
+metadata:
+  name: test.com-host
+spec:
+  hostname: "*.test.com"
+  acmeProvider:
+    authority: none
+  tlsSecret: 
+    name: tls-cert
+  requestPolicy:
+    insecure:
+      action: Route
+---
+apiVersion: getambassador.io/v2
+kind:  Mapping
+metadata:
+  name:  h1-root-mapping
+spec:
+  host: h1.test.com
+  prefix: "/"
+  service: httpbin:8080
+  resolver: endpoint
+  load_balancer:
+    policy: round_robin
+  labels:
+    ambassador:
+      - request_label_group:
+        - remote_address
+---
+apiVersion: getambassador.io/v2
+kind:  Mapping
+metadata:
+  name:  h1-get-mapping
+spec:
+  host: h1.test.com
+  prefix: "/get/"
+  service: httpbin:8080
+  resolver: endpoint
+  load_balancer:
+    policy: round_robin

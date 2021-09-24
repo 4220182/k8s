@@ -1,0 +1,10 @@
+apiVersion: getambassador.io/v2
+kind: RateLimit
+metadata:
+  name: backend-rate-limit
+spec:
+  domain: ambassador
+  limits:
+   - pattern: [{remote_address: "*"}]
+     rate: 3
+     unit: minute
