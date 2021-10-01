@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testflask
+  labels:
+    app: testflask
+spec:
+  ports:
+  - name: http-web
+    port: 80
+    targetPort: 8080
+  - name: http-metrics
+    port: 9100
+    targetPort: 9100
+  selector:
+    app: testflask
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testflask-v1
+  labels:
+    app: testflask
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testflask
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: testflask
+        version: v1
+        istio.io/rev: v1-11-3
+    spec:
+      nodeSelector:
+         kubernetes.io/hostname: k8s-node1
+      containers:
+      - image: koza/test-flask:0.0.1
+        imagePullPolicy: IfNotPresent
+        name: testflaskw
+        ports:
+        - name: http-web
+          containerPort: 8080
+        - name: http-metrics
+          containerPort: 9100
+        resources:
+          limits:
+           cpu : 1500m
+           memory: 1000Mi
+          requests:
+            cpu: 30m
+            memory: 1Mi

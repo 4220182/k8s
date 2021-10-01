@@ -1,0 +1,49 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: testflask
+spec:
+  hosts:
+    - "testflask"
+    - "testflask.tmp.com"
+    - "testflask.test.com"
+  gateways:
+    - testflask-gateway
+    - testflask-gateway-https
+  http:
+  - match:
+    - uri:
+        prefix: /metrics
+    route:
+    - destination:
+        port:
+          number: 9100
+        host: testflask
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: testflask
+---
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: grpcdemo
+spec:
+  hosts:
+    - "grpcdemo"
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 5005
+        host: grpcdemo
+

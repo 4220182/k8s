@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpcdemo
+  labels:
+    app: grpcdemo
+spec:
+  ports:
+  - name: grpc-demo
+    port: 5005
+    targetPort: 5005
+  selector:
+    app: grpcdemo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpcdemo-v1
+  labels:
+    app: grpcdemo
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpcdemo
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: grpcdemo
+        version: v1
+        istio.io/rev: v1-11-3
+    spec:
+      nodeSelector:
+         kubernetes.io/hostname: k8s-node1
+      containers:
+      - image: koza/grpc-demo:latest
+        imagePullPolicy: IfNotPresent
+        name: grpcdemow
+        ports:
+        - name: grpc-demo 
+          containerPort: 5005
+        resources:
+          limits:
+           cpu : 1500m
+           memory: 1000Mi
+          requests:
+            cpu: 30m
+            memory: 1Mi
